@@ -1,2 +1,0 @@
-org/mystic/AmthauerTest.java
- org.mystic.AmthauerTest
