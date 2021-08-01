@@ -1,4 +1,4 @@
-# [Amthauer][Rudol Amthauer] Test
+# [Amthauer][Rudolf Amthauer] Test
 
 The intelligence structure test has been developed in 1953 for tasks of occupational selection and vocational guidance. The test allows to receive complete representation about individual´s intelligence. The test is designed for an assessment not only the general level of intelligence development, but also its separate components: verbal, numerical and spatial thinking, logic abilities, attention, memory, amount of knowledge. The test consists of nine subtests focused on examination of the basic components of verbal and nonverbal intelligence: a lexical store, general awareness, abstraction ability, generalization ability, mathematical abilities, combinatory thinking, spatial imagination, ability to short-term storing of the information.
 The results received with the help of the R. Amthauer test allow:
@@ -31,5 +31,5 @@ $ gradlew jlink
 You could later run executable located in `build/image/bin`
 
 [demo]: https://github.com/MysterionRise/kagan-figures/blob/master/src/main/resources/compare/DemoFullImage.png?raw=true "Demo"
-[Rudol Amthauer]:  https://de.wikipedia.org/wiki/Rudolf_Amthauer
+[Rudolf Amthauer]:  https://de.wikipedia.org/wiki/Rudolf_Amthauer
 

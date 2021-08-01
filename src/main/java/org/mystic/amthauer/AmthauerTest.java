@@ -16,7 +16,7 @@ public class AmthauerTest extends Application {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         Group root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
         primaryStage.setTitle("Amthauer Test");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 800, 900));
         primaryStage.show();
     }
 
