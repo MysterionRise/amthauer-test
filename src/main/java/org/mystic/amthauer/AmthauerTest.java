@@ -9,14 +9,15 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-
 public class AmthauerTest extends Application {
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         Group root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
         primaryStage.setTitle("Amthauer Test");
-        primaryStage.setScene(new Scene(root, 800, 900));
+        Scene scene = new Scene(root, 800, 900);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
