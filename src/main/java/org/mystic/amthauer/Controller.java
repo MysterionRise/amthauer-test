@@ -8,12 +8,25 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+
 public class Controller {
 
+    private static final String TASK = "task_";
+    private static final String LABEL = "label_";
+    private static final int PREF_WIDTH = 700;
+    private static final int OUTPUT_PREF_WIDTH = 300;
+    private static final int LAYOUT_X = 50;
+    private static final int LAYOUT_Y = 100;
     @FXML
     Button nextStep;
     @FXML
@@ -26,52 +39,12 @@ public class Controller {
     Label testName;
     private String login;
     private Scene scene;
-    private Timeline animation;
+    private PrintWriter printWriter;
 
     private int currentStep = 0;
 
-    @FXML
-    private void closeWindow() {
-        System.exit(0);
-    }
 
-    @FXML
-    public void startTest() {
-        this.scene = nextStep.getScene();
-        if (userName.getText().equalsIgnoreCase("Введите свое имя") || userName.getText().length() == 0) {
-
-        } else {
-            this.login = userName.getText();
-            userName.setVisible(false);
-            startTestButton.setDisable(true);
-            instructionText.setText("""
-                    Тест 1.
-                    Суть заданий, которые Вам будут предложены, состоит в том, что в ряду из пяти слов надо будет выделить «лишнее», не подходящее по смыслу к остальным четырем словам.
-                    Пример 1
-                    1)      стол   2)стул    3)синица    4)шкаф    5) кровать
-                    Ответ: 3) синица
-                    Четыре слова (стол, стул, шкаф, кровать) по смыслу подходят друг к другу, как предметы мебели, а слово «синица» является «лишним» в ряду этих слов.
-                    \n
-                    Пример 2
-                    1)      сидеть    2) лежать    3) стоять    4)идти    5) стоять на коленях
-                    Ответ: 4) идти
-                    Четыре суждения (сидеть, лежать, стоять, стоять на коленях) характеризуют неподвижность, а слово «идти» не подходит к ним, оказывается «лишним», так как характеризует движение.
-                    Заданий такого типа будет двадцать. Отвечать на них нужно в окошке, следующем непосредственно после каждого задания. В каждом задании слова пронумерованы: 1, 2, 3, 4, 5. Номер «лишнего» слова надо будет записать в пустом окошке под соответствующим заданием.
-                    Работать следует быстро. Время выполнения заданий ограничено. Если затрудняетесь в выборе ответа, задание можно пропустить (если останется время, Вы еще сможете к нему вернуться). Если ошиблись, можно вернуться и исправить ответ.
-                    Нажмите ДАЛЕЕ и начинайте работать, когда будете готовы. По истечении отведенного времени, форма выполнения заданий будет закрыта вне зависимости от того, успели Вы выполнить все задания или нет. Если Вы справитесь с заданиями быстрее, то в оставшееся время можно проверить свою работу или просто отдохнуть, но нельзя приступать к следующим заданиям. Переходить к следующему заданию осуществляется автоматически по истечению времени.
-                               
-                    """);
-            instructionText.setVisible(true);
-            nextStep.setVisible(true);
-        }
-    }
-
-    @FXML
-    public void clearTextField() {
-        userName.clear();
-    }
-
-    final Map<Integer, String> tasks120 = Map.ofEntries(
+    private static final Map<Integer, String> TASKS_120 = Map.ofEntries(
             new SimpleEntry<>(1, "1.    1) писать 2) рубить З) ковать 4) шить 5) читать "),
             new SimpleEntry<>(2, "2.    1) скоро 2) вскоре 3) в скором времени 4) завтра 5) сейчас  "),
             new SimpleEntry<>(3, "3.    1) клиент 2) компаньон 3) подзащитный 4) покупатель 5) пациент"),
@@ -94,7 +67,7 @@ public class Controller {
             new SimpleEntry<>(20, "20.  1) распространенный 2) типичный 3) простой 4) привычный 5) обыденный  ")
     );
 
-    final Map<Integer, String> tasks2140 = Map.ofEntries(
+    private static final Map<Integer, String> TASKS_2140 = Map.ofEntries(
             new SimpleEntry<>(1, "21) Дорого — редко = дешево — ?\n" +
                     "1) недорого 2) прочно 3) доступно 4) обычно 5) часто"),
             new SimpleEntry<>(2, "22) Прямоугольник — эллипс = квадрат — ?\n" +
@@ -137,7 +110,7 @@ public class Controller {
                     "1) влага 2) ветви 3) корни 4) крона 5) ростки"));
 
 
-    final Map<Integer, String> tasks4160 = Map.ofEntries(
+    private static final Map<Integer, String> TASKS_4160 = Map.ofEntries(
             new SimpleEntry<>(1, "41.    1) бедность 2) опасность 3) голод 4) болезнь 5) страх 6) жажда"),
             new SimpleEntry<>(2, "42.    1) характер 2) симптом 3) система 4) желание 5) признак 6) диагноз  "),
             new SimpleEntry<>(3, "43.    1) море 2) водоросль 3) медуза 4) дельфин 5) мусор б) кит "),
@@ -160,17 +133,75 @@ public class Controller {
             new SimpleEntry<>(20, "60.   1) научиться 2) приспособиться 3) остаться 4) присмотреться 5) адаптироваться 6) отдохнуть  ")
     );
 
+    private static final Map<Integer, String> CORRECT_ANSWERS = Map.ofEntries(
+            new SimpleEntry<>(1, "5"),
+            new SimpleEntry<>(2, "5"),
+            new SimpleEntry<>(3, "2"),
+            new SimpleEntry<>(4, "3")
+    );
+
+    @FXML
+    private void closeWindow() {
+        this.printWriter.flush();
+        this.printWriter.close();
+        System.exit(0);
+    }
+
+    @FXML
+    public void startTest() throws FileNotFoundException {
+        this.scene = nextStep.getScene();
+        if (userName.getText().equalsIgnoreCase("Введите свое имя") || userName.getText().length() == 0) {
+
+        } else {
+            this.login = userName.getText();
+            File csvOutputFile = new File("%s_%s.csv".formatted(this.login, LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC)));
+            this.printWriter = new PrintWriter(csvOutputFile);
+            this.printWriter.println("task_id,raw_response,is_correct");
+            this.printWriter.flush();
+            userName.setVisible(false);
+            startTestButton.setDisable(true);
+            instructionText.setText("""
+                    Тест 1.
+                    Суть заданий, которые Вам будут предложены, состоит в том, что в ряду из пяти слов надо будет выделить «лишнее», не подходящее по смыслу к остальным четырем словам.
+                    Пример 1
+                    1)      стол   2)стул    3)синица    4)шкаф    5) кровать
+                    Ответ: 3) синица
+                    Четыре слова (стол, стул, шкаф, кровать) по смыслу подходят друг к другу, как предметы мебели, а слово «синица» является «лишним» в ряду этих слов.
+                                        
+                                        
+                    Пример 2
+                    1)      сидеть    2) лежать    3) стоять    4)идти    5) стоять на коленях
+                    Ответ: 4) идти
+                    Четыре суждения (сидеть, лежать, стоять, стоять на коленях) характеризуют неподвижность, а слово «идти» не подходит к ним, оказывается «лишним», так как характеризует движение.
+                    Заданий такого типа будет двадцать. Отвечать на них нужно в окошке, следующем непосредственно после каждого задания. В каждом задании слова пронумерованы: 1, 2, 3, 4, 5. Номер «лишнего» слова надо будет записать в пустом окошке под соответствующим заданием.
+                    Работать следует быстро. Время выполнения заданий ограничено. Если затрудняетесь в выборе ответа, задание можно пропустить (если останется время, Вы еще сможете к нему вернуться). Если ошиблись, можно вернуться и исправить ответ.
+                    Нажмите ДАЛЕЕ и начинайте работать, когда будете готовы. По истечении отведенного времени, форма выполнения заданий будет закрыта вне зависимости от того, успели Вы выполнить все задания или нет. Если Вы справитесь с заданиями быстрее, то в оставшееся время можно проверить свою работу или просто отдохнуть, но нельзя приступать к следующим заданиям. Переходить к следующему заданию осуществляется автоматически по истечению времени.
+                               
+                    """);
+            instructionText.setVisible(true);
+            nextStep.setVisible(true);
+        }
+    }
+
+    @FXML
+    public void clearTextField() {
+        userName.clear();
+    }
 
     @FXML
     public void nextStep() {
+        callNextStep();
+    }
+
+    private void callNextStep() {
         currentStep++;
         if (currentStep == 1) {
             System.out.println("step 1");
             tasks120();
         } else if (currentStep == 2) {
-            animation.stop();
             System.out.println("step 2");
             getResults(1, 20);
+            testName.setVisible(false);
             nextStep.setVisible(true);
             instructionText.setText(
                     """
@@ -196,9 +227,9 @@ public class Controller {
             System.out.println("step 3");
             tasks2140();
         } else if (currentStep == 4) {
-            animation.stop();
             System.out.println("step 4");
             getResults(21, 40);
+            testName.setVisible(false);
             nextStep.setVisible(true);
             instructionText.setText(
                     """
@@ -212,7 +243,6 @@ public class Controller {
                             1) трава 2) рожь 3) пирог 4)мука 5)пшеница 6) дерево
                             Ответ:25 (рожь и пшеница)
                             Слова «рожь» и «пшеница» однородны, относятся к одной классификационной группе «зерновые растения», между собой никак не связаны. Нельзя, например, выбрать слова «мука и пирог», так как эти слова связаны функционально (из муки пекут пирог), но ни в какую общую классификационную группу не входят. Также не являются ответом слова «трава» и «дерево», хотя они и не связаны между собой, и входят в одну классификационную группу — «растения». Дело в том, что и рожь, и пшеница тоже растения, и получается, что в выделенную группу попадает четыре слова, а не два, как требуется. Всегда надо искать такую классификационную группу, чтобы в нее попадало только два слова.
-                            Номера выбранных Вами двух слов нужно записывать (через запятую) в одну клеточку в табличке М, предназначенной для заданий 61-80. Помните, обе цифры следует вписывать в одну клеточку, соответствующую номеру задания.
                             Заданий такого типа будет тоже двадцать. Отвечать на них нужно в окошке, следующем непосредственно после каждого задания. В каждом задании слова пронумерованы: 1, 2, 3, 4, 5. Помните, обе цифры следует вписывать в одно окошко под соответствующим заданием не разделяя запятыми, точками или тире, как указано в примере.
                             Если не знаете, какой ответ выбрать, можно эту задачку пропустить. К ней можно будет вернуться, если останется время. Если Вам кажется, что Вы ошиблись, то можете исправить,  ответ на тот, который считаете более правильным. Надо стараться работать быстро, так как время выполнения заданий ограничено.
                             Нажмите ДАЛЕЕ и начинайте работать, когда будете готовы. По истечении отведенного времени, форма выполнения заданий будет закрыта вне зависимости от того, успели Вы выполнить все задания или нет. Если Вы справитесь с заданиями быстрее, то в оставшееся время можно проверить свою работу или просто отдохнуть, но нельзя приступать к следующим заданиям. Переходить к следующему заданию осуществляется автоматически по истечению времени.
@@ -224,30 +254,30 @@ public class Controller {
             System.out.println("step 5");
             tasks4160();
         } else if (currentStep == 6) {
-            animation.stop();
             System.out.println("step 6");
             getResults(41, 60);
+            testName.setVisible(false);
             nextStep.setVisible(true);
             instructionText.setText(
                     """
-                     Тест 4.
-                                              
-                     """
+                            Тест 4.
+                                                     
+                            """
             );
             instructionText.setVisible(true);
         } else if (currentStep == 7) {
             System.out.println("step 7");
             tasks121140();
         } else if (currentStep == 8) {
-            animation.stop();
             System.out.println("step 8");
             getResults(121, 140);
+            testName.setVisible(false);
             nextStep.setVisible(true);
             instructionText.setText(
                     """
-                    Тест 5.
-                                                     
-                    """
+                            Тест 5.
+                                                             
+                            """
             );
             instructionText.setVisible(true);
         } else if (currentStep == 9) {
@@ -257,28 +287,68 @@ public class Controller {
             System.out.println("step 10");
             getResults(141, 160);
             closeWindow();
+            this.printWriter.close();
         }
-    }
-
-    private void tasks141160() {
-
-    }
-
-    private void tasks121140() {
     }
 
     private void getResults(int start, int finish) {
         Pane parent = (Pane) testName.getParent();
         for (int i = start; i <= finish; ++i) {
-            TextField textField = (TextField) parent.lookup("#task_" + i);
-            System.out.println(textField.getText());
+            TextField textField = (TextField) parent.lookup("#" + TASK + i);
+            this.printWriter.println("%s,%s,%s".formatted(i, textField.getText(), isAnswerCorrect(i, textField.getText())));
             textField.setDisable(true);
             textField.setVisible(false);
             parent.getChildren().remove(textField);
-            Label l = (Label) parent.lookup("#label_" + i);
+            Label l = (Label) parent.lookup("#" + LABEL + i);
             l.setDisable(true);
             l.setVisible(false);
             parent.getChildren().remove(l);
+        }
+        this.printWriter.flush();
+    }
+
+    private String isAnswerCorrect(int taskId, String rawAnswer) {
+        return CORRECT_ANSWERS.getOrDefault(taskId, "").equalsIgnoreCase(rawAnswer) ? "true" : "false";
+    }
+
+    private void tasks120() {
+        testName.setVisible(true);
+        testName.setText("ЗАДАНИЯ 1-20");
+        instructionText.setVisible(false);
+        nextStep.setVisible(false);
+        Pane parent = (Pane) testName.getParent();
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.minutes(6),
+                        actionEvent -> callNextStep()
+                ));
+        animation.setCycleCount(1);
+        animation.play();
+        for (int i = 1; i <= 20; ++i) {
+            Label e = new Label(String.valueOf(i));
+            e.setId(LABEL + i);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i);
+            e.setText(TASKS_120.getOrDefault(i, String.valueOf(i)));
+            parent.getChildren().add(e);
+            TextField inputField = new TextField("");
+            UnaryOperator<TextFormatter.Change> rejectChange = c -> {
+                if (c.isContentChange()) {
+                    for (char ch : c.getControlNewText().toCharArray()) {
+                        if (!Character.isDigit(ch)) {
+                            return null;
+                        }
+                    }
+                    return c;
+                }
+                return c;
+            };
+            inputField.setTextFormatter(new TextFormatter<>(rejectChange));
+            inputField.setId(TASK + i);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
+            parent.getChildren().add(inputField);
         }
     }
 
@@ -288,14 +358,20 @@ public class Controller {
         instructionText.setVisible(false);
         nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.minutes(7),
+                        actionEvent -> callNextStep()
+                ));
+        animation.setCycleCount(1);
+        animation.play();
         for (int i = 1; i <= 20; ++i) { // + 20
             int idx = i + 20;
             Label e = new Label(String.valueOf(idx));
-            e.setId("label_" + idx);
-            e.setPrefWidth(500);
-            e.setLayoutX(50);
-            e.setLayoutY(100 * i);
-            e.setText(tasks2140.getOrDefault(i, String.valueOf(i)));
+            e.setId(LABEL + idx);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i);
+            e.setText(TASKS_2140.getOrDefault(i, String.valueOf(i)));
             parent.getChildren().add(e);
             TextField inputField = new TextField("");
             UnaryOperator<TextFormatter.Change> rejectChange = c -> {
@@ -310,17 +386,11 @@ public class Controller {
                 return c;
             };
             inputField.setTextFormatter(new TextFormatter<>(rejectChange));
-            inputField.setId("task_" + idx);
-            inputField.setPrefWidth(300);
-            inputField.setLayoutX(50);
-            inputField.setLayoutY(100 * i + 50);
+            inputField.setId(TASK + idx);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
             parent.getChildren().add(inputField);
-            Timeline animation = new Timeline(
-                    new KeyFrame(Duration.minutes(1),
-                            actionEvent -> nextStep()
-                    ));
-            animation.setCycleCount(1);
-            animation.play();
         }
     }
 
@@ -330,14 +400,20 @@ public class Controller {
         instructionText.setVisible(false);
         nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.minutes(8),
+                        actionEvent -> callNextStep()
+                ));
+        animation.setCycleCount(1);
+        animation.play();
         for (int i = 1; i <= 20; ++i) { // +40
             int idx = i + 40;
             Label e = new Label(String.valueOf(idx));
-            e.setId("label_" + idx);
-            e.setPrefWidth(500);
-            e.setLayoutX(50);
-            e.setLayoutY(100 * i);
-            e.setText(tasks4160.getOrDefault(i, String.valueOf(i)));
+            e.setId(LABEL + idx);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i);
+            e.setText(TASKS_4160.getOrDefault(i, String.valueOf(i)));
             parent.getChildren().add(e);
             TextField inputField = new TextField("");
             UnaryOperator<TextFormatter.Change> rejectChange = c -> {
@@ -352,34 +428,28 @@ public class Controller {
                 return c;
             };
             inputField.setTextFormatter(new TextFormatter<>(rejectChange));
-            inputField.setId("task_" + idx);
-            inputField.setPrefWidth(300);
-            inputField.setLayoutX(50);
-            inputField.setLayoutY(100 * i + 50);
+            inputField.setId(TASK + idx);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
             parent.getChildren().add(inputField);
-            animation = new Timeline(
-                    new KeyFrame(Duration.minutes(1),
-                            actionEvent -> nextStep()
-                    ));
-            animation.setCycleCount(1);
-            animation.play();
         }
     }
 
-    private void tasks120() {
+    private void tasks121140() {
         testName.setVisible(true);
-        testName.setText("ЗАДАНИЯ 1-20");
+        testName.setText("ЗАДАНИЯ 121-140");
         instructionText.setVisible(false);
         nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
-        for (int i = 1; i <= 20; ++i) {
-            Label e = new Label(String.valueOf(i));
-            e.setId("label_" + i);
-            e.setPrefWidth(500);
-            e.setLayoutX(50);
-            e.setLayoutY(100 * i);
-            e.setText(tasks120.getOrDefault(i, String.valueOf(i)));
-            parent.getChildren().add(e);
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.minutes(7),
+                        actionEvent -> callNextStep()
+                ));
+        animation.setCycleCount(1);
+        animation.play();
+        for (int i = 1; i <= 20; ++i) { // +120
+            int idx = i + 120;
             TextField inputField = new TextField("");
             UnaryOperator<TextFormatter.Change> rejectChange = c -> {
                 if (c.isContentChange()) {
@@ -393,17 +463,47 @@ public class Controller {
                 return c;
             };
             inputField.setTextFormatter(new TextFormatter<>(rejectChange));
-            inputField.setId("task_" + i);
-            inputField.setPrefWidth(300);
-            inputField.setLayoutX(50);
-            inputField.setLayoutY(100 * i + 50);
+            inputField.setId(TASK + idx);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
             parent.getChildren().add(inputField);
-            animation = new Timeline(
-                    new KeyFrame(Duration.minutes(1),
-                            actionEvent -> nextStep()
-                    ));
-            animation.setCycleCount(1);
-            animation.play();
         }
+    }
+
+    private void tasks141160() {
+        testName.setVisible(true);
+        testName.setText("ЗАДАНИЯ 141-160");
+        instructionText.setVisible(false);
+        nextStep.setVisible(false);
+        Pane parent = (Pane) testName.getParent();
+        Timeline animation = new Timeline(
+                new KeyFrame(Duration.minutes(9),
+                        actionEvent -> callNextStep()
+                ));
+        animation.setCycleCount(1);
+        animation.play();
+        for (int i = 1; i <= 20; ++i) { // +140
+            int idx = i + 140;
+            TextField inputField = new TextField("");
+            UnaryOperator<TextFormatter.Change> rejectChange = c -> {
+                if (c.isContentChange()) {
+                    for (char ch : c.getControlNewText().toCharArray()) {
+                        if (!Character.isDigit(ch)) {
+                            return null;
+                        }
+                    }
+                    return c;
+                }
+                return c;
+            };
+            inputField.setTextFormatter(new TextFormatter<>(rejectChange));
+            inputField.setId(TASK + idx);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
+            parent.getChildren().add(inputField);
+        }
+
     }
 }
