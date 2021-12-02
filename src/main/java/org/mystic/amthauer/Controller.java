@@ -5,6 +5,8 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
@@ -37,6 +39,12 @@ public class Controller {
     TextField userName;
     @FXML
     Label testName;
+    @FXML
+    ImageView image1;
+    @FXML
+    TextArea instructionText2;
+    @FXML
+    ImageView image2;
     private String login;
     private Scene scene;
     private PrintWriter printWriter;
@@ -137,13 +145,115 @@ public class Controller {
             new SimpleEntry<>(1, "5"),
             new SimpleEntry<>(2, "5"),
             new SimpleEntry<>(3, "2"),
-            new SimpleEntry<>(4, "3")
+            new SimpleEntry<>(4, "3"),
+            new SimpleEntry<>(5, "5"),
+            new SimpleEntry<>(6, "4"),
+            new SimpleEntry<>(7, "2"),
+            new SimpleEntry<>(8, "5"),
+            new SimpleEntry<>(9, "4"),
+            new SimpleEntry<>(10, "2"),
+            new SimpleEntry<>(11, "2"),
+            new SimpleEntry<>(12, "1"),
+            new SimpleEntry<>(13, "1"),
+            new SimpleEntry<>(14, "3"),
+            new SimpleEntry<>(15, "2"),
+            new SimpleEntry<>(16, "3"),
+            new SimpleEntry<>(17, "3"),
+            new SimpleEntry<>(18, "3"),
+            new SimpleEntry<>(19, "3"),
+            new SimpleEntry<>(20, "3"),
+
+            new SimpleEntry<>(21, "5"),
+            new SimpleEntry<>(22, "2"),
+            new SimpleEntry<>(23, "3"),
+            new SimpleEntry<>(24, "5"),
+            new SimpleEntry<>(25, "1"),
+            new SimpleEntry<>(26, "3"),
+            new SimpleEntry<>(27, "2"),
+            new SimpleEntry<>(28, "3"),
+            new SimpleEntry<>(29, "3"),
+            new SimpleEntry<>(30, "4"),
+            new SimpleEntry<>(31, "3"),
+            new SimpleEntry<>(32, "4"),
+            new SimpleEntry<>(33, "2"),
+            new SimpleEntry<>(34, "4"),
+            new SimpleEntry<>(35, "3"),
+            new SimpleEntry<>(36, "4"),
+            new SimpleEntry<>(37, "3"),
+            new SimpleEntry<>(38, "3"),
+            new SimpleEntry<>(39, "3"),
+            new SimpleEntry<>(40, "4"),
+
+            new SimpleEntry<>(41, "36"),
+            new SimpleEntry<>(42, "25"),
+            new SimpleEntry<>(43, "46"),
+            new SimpleEntry<>(44, "46"),
+            new SimpleEntry<>(45, "36"),
+            new SimpleEntry<>(46, "25"),
+            new SimpleEntry<>(47, "24"),
+            new SimpleEntry<>(48, "16"),
+            new SimpleEntry<>(49, "15"),
+            new SimpleEntry<>(50, "36"),
+            new SimpleEntry<>(51, "26"),
+            new SimpleEntry<>(52, "36"),
+            new SimpleEntry<>(53, "16"),
+            new SimpleEntry<>(54, "36"),
+            new SimpleEntry<>(55, "24"),
+            new SimpleEntry<>(56, "23"),
+            new SimpleEntry<>(57, "26"),
+            new SimpleEntry<>(58, "15"),
+            new SimpleEntry<>(59, "14"),
+            new SimpleEntry<>(60, "25"),
+
+            new SimpleEntry<>(121, "2"),
+            new SimpleEntry<>(122, "5"),
+            new SimpleEntry<>(123, "4"),
+            new SimpleEntry<>(124, "1"),
+            new SimpleEntry<>(125, "4"),
+            new SimpleEntry<>(126, "5"),
+            new SimpleEntry<>(127, "3"),
+            new SimpleEntry<>(128, "5"),
+            new SimpleEntry<>(129, "1"),
+            new SimpleEntry<>(130, "3"),
+            new SimpleEntry<>(131, "1"),
+            new SimpleEntry<>(132, "4"),
+            new SimpleEntry<>(133, "5"),
+            new SimpleEntry<>(134, "2"),
+            new SimpleEntry<>(135, "1"),
+            new SimpleEntry<>(136, "2"),
+            new SimpleEntry<>(137, "1"),
+            new SimpleEntry<>(138, "5"),
+            new SimpleEntry<>(139, "3"),
+            new SimpleEntry<>(140, "3"),
+
+            new SimpleEntry<>(141, "2"),
+            new SimpleEntry<>(142, "4"),
+            new SimpleEntry<>(143, "3"),
+            new SimpleEntry<>(144, "1"),
+            new SimpleEntry<>(145, "4"),
+            new SimpleEntry<>(146, "1"),
+            new SimpleEntry<>(147, "2"),
+            new SimpleEntry<>(148, "5"),
+            new SimpleEntry<>(149, "3"),
+            new SimpleEntry<>(150, "4"),
+            new SimpleEntry<>(151, "1"),
+            new SimpleEntry<>(152, "2"),
+            new SimpleEntry<>(153, "5"),
+            new SimpleEntry<>(154, "4"),
+            new SimpleEntry<>(155, "3"),
+            new SimpleEntry<>(156, "2"),
+            new SimpleEntry<>(157, "5"),
+            new SimpleEntry<>(158, "1"),
+            new SimpleEntry<>(159, "3"),
+            new SimpleEntry<>(160, "5")
     );
 
     @FXML
     private void closeWindow() {
-        this.printWriter.flush();
-        this.printWriter.close();
+        if (this.printWriter != null) {
+            this.printWriter.flush();
+            this.printWriter.close();
+        }
         System.exit(0);
     }
 
@@ -154,7 +264,7 @@ public class Controller {
 
         } else {
             this.login = userName.getText();
-            File csvOutputFile = new File("%s_%s.csv".formatted(this.login, LocalDate.ofInstant(Instant.now(), ZoneOffset.UTC)));
+            File csvOutputFile = new File("%s.csv".formatted(this.login));
             this.printWriter = new PrintWriter(csvOutputFile);
             this.printWriter.println("task_id,raw_response,is_correct");
             this.printWriter.flush();
@@ -261,10 +371,25 @@ public class Controller {
             instructionText.setText(
                     """
                             Тест 4.
-                                                     
+                            Суть задания, которое будет Вам предложено, состоит в том, чтобы мысленно сложить
+                            фигуру, разрезанную на кусочки, которые в свою очередь размещены на плоскости в случайном порядке.
                             """
             );
             instructionText.setVisible(true);
+            instructionText.setPrefHeight(100f);
+            Image example = new Image("file:src/main/resources/subtest7/example.png", true);
+            image1.setImage(example);
+            image1.setVisible(true);
+            image1.setLayoutY(200f);
+            instructionText2.setText(
+                    """
+                            В верхнем ряду нарисованы фигуры-образцы. Они пронумерованы 1, 2, 3, 4, 5. Ниже нарисованы те же фигуры, но только разрезанные на кусочки. Вам надо из кусочков сложить какую-нибудь фигуру-образец. Из первых нижних кусочков получается фигура 1. Из вторых нижних кусочков получается фигура 5, из третьих — фигура 2, из четвертых — 4.
+                            Пример очень простой, само задание будет несколько труднее, но принцип работы сохраняется тот же. Задание будет состоять из двух составных частей по 10 фигур (нужно будет прокрутить страницу до конца, чтобы увидеть все задания). В верхнем ряду также будут нарисованы фигуры-образцы. Они пронумерованы 1, 2, 3, 4, 5. Под ними два ряда кусочков, из которых надо пытаться получить какую-нибудь фигуру-образец. Далее будут следовать окошки для ответов для первой части заданий. Ниже будет изображен еще ряд фигур-образцов (тоже под номерами 1, 2, 3, 4,5), а под ними еще два ряда с вариантами кусочков и окошки для ответом. Ваша задача будет состоять в том, чтобы из каждого набора кусочков мысленно сложить какой-либо из образцов. При «составлении» образца обязательно надо использовать все кусочки, нельзя ограничиться только отдельными фрагментами.
+                            Ответом будет являться номер фигуры-образца, которая, по Вашему мнению, получается из кусочков Номер этой фигуры-образца и следует записывать в окошки, соответствующие номерам заданий 121-140. Номера фигур-образцов, естественно, будут повторяться, потому что их всего пять, а «кусочков» — десять вариантов. Какой-то образец может получиться и два, и три раза, может быть и подряд. Пусть вас это Вас не смущает. Если сразу не видно, какая получается из кусочков фигура, то лучше пропустите и переходите к следующей. К ним можно будет еще раз вернуться, если останется время.
+                            Помните, что работать надо быстро, так как время выполнения ограничено. Если Вам кажется, что Вы ошиблись, то можете исправить, и вписать тот ответ, который считаете более правильным. Нажмите ДАЛЕЕ и начинайте работать, когда будете готовы. По истечении отведенного времени, форма выполнения заданий будет закрыта вне зависимости от того, успели Вы выполнить все задания или нет. Если Вы справитесь с заданиями быстрее, то в оставшееся время можно проверить свою работу или просто отдохнуть, но нельзя приступать к следующим заданиям. Переход к следующему заданию осуществляется автоматически по истечению времени.
+                             """
+            );
+            instructionText2.setVisible(true);
         } else if (currentStep == 7) {
             System.out.println("step 7");
             tasks121140();
@@ -276,10 +401,27 @@ public class Controller {
             instructionText.setText(
                     """
                             Тест 5.
-                                                             
+                            Задание, которое будет Вам предложено, немного похоже на предыдущее, только теперь в качестве образцов будут выступать кубики.
                             """
             );
+            instructionText.setPrefHeight(100f);
+            instructionText.setLayoutY(50f);
             instructionText.setVisible(true);
+            Image example = new Image("file:src/main/resources/subtest8/example.png", true);
+            image1.setImage(example);
+            image1.setVisible(true);
+            image1.setLayoutY(150f);
+            instructionText2.setText(
+                    """
+                            Верхний ряд кубиков  — это образцы, они пронумерованы 1, 2, 3, 4, 5. Кубики-образцы все разные, потому что по-разному разрисованы их грани (это не дырки, а нарисованные кружочки, квадратики и линии). Ниже нарисованы те же самые кубики, только в измененном положении. Они могут быть повернуты в горизонтальной или в вертикальной плоскости, или и одновременно в обеих плоскостях. Когда кубик поворачивается (один или несколько раз), внешний вид его меняется, он начинает выглядеть по-другому. Может одна грань исчезнуть и появиться новая, но две грани (из изображенных на образце) всегда остаются видны, хотя и иначе выглядят. Могут оставаться перед глазами и все три грани образца, только они будут даны в другом положении. Вам надо, сравнивая, как соотносятся рисунки на гранях, определить, с каким из образцов идентичен каждый кубик, который нарисован ниже во втором ряду.
+                             Первый нижний кубик идентичен образцу 1. Второй нижний кубик представляет собой образец 5. Проследим подробнее за преобразованиями третьего нижнего кубика. Если его один раз повернуть в вертикальной плоскости против часовой стрелки, кружок из верхнего левого угла «опустится» в нижний левый, верхняя грань с кружком по середине спрячется и не будет видна, правая грань станет верхней и ее нижний дальний «уголок» поднимется наверх, а на ее месте появиться новая грань, которая есть на образце, но не была видна на кубике. В итоге мы получим образец 2. Четвертый нижний кубик представляет собой образец 3, пятый нижний кубик — образец 4.
+                             Само задание будет точно таким же. В верхнем ряду будут расположены кубики-образцы (которые будут иметь номера 1, 2, 3, 4, 5), а ниже — ряды кубиков, которые нужно сравнивать с образцами и выбирать, на какой из образцов каждый из них похож. Ответ (то есть номер выбранного кубика-образца) следует записывать в окошках, предназначенных для каждого задания 141-160, под соответствующим номером кубика-задания. На каждый кубик-образец могут оказаться похожими несколько кубиков-заданий, так как образцов всего пять, а кубиков к ним двадцать. Следовательно, номера ответов будут повторяться, каждый может встретиться несколько раз, возможно и подряд. Если какой-то кубик не определить, то можете его пропустить.
+                             Помните, что время выполнения задания ограничено. Желательно, чтобы за это время Вы успели просмотреть все кубики-задания. В конце могут оказаться более легкие задания, а Вы до них просто не успеете дойти. Если Вам кажется, что Вы ошиблись, то можете исправить, и указать ответ, который считаете более правильным.
+                             Нажмите ДАЛЕЕ и начинайте работать, когда будете готовы. По истечении отведенного времени, форма выполнения заданий будет закрыта вне зависимости от того, успели Вы выполнить все задания или нет. Если Вы справитесь с заданиями быстрее, то в оставшееся время можно проверить свою работу или просто отдохнуть, но нельзя приступать к следующим заданиям. Переход к следующему заданию осуществляется автоматически по истечению времени.
+                            """
+            );
+            instructionText2.setVisible(true);
+            image2.setVisible(false);
         } else if (currentStep == 9) {
             System.out.println("step 9");
             tasks141160();
@@ -308,14 +450,16 @@ public class Controller {
     }
 
     private String isAnswerCorrect(int taskId, String rawAnswer) {
-        return CORRECT_ANSWERS.getOrDefault(taskId, "").equalsIgnoreCase(rawAnswer) ? "true" : "false";
+        if (CORRECT_ANSWERS.containsKey(taskId))
+            return CORRECT_ANSWERS.get(taskId).equalsIgnoreCase(rawAnswer) ? "true" : "false";
+        return "false";
     }
 
     private void tasks120() {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 1-20");
         instructionText.setVisible(false);
-        nextStep.setVisible(false);
+//        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(6),
@@ -356,7 +500,7 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 21-40");
         instructionText.setVisible(false);
-        nextStep.setVisible(false);
+//        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(7),
@@ -398,7 +542,7 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 41-60");
         instructionText.setVisible(false);
-        nextStep.setVisible(false);
+//        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(8),
@@ -440,7 +584,16 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 121-140");
         instructionText.setVisible(false);
-        nextStep.setVisible(false);
+        instructionText2.setVisible(false);
+        Image base = new Image("file:src/main/resources/subtest7/121-130.png");
+        image1.setImage(base);
+        image1.setLayoutY(50f);
+        image1.setFitHeight(500f);
+        image1.setFitWidth(1000f);
+        image1.setPreserveRatio(true);
+        image1.setSmooth(true);
+        image1.setVisible(true);
+//        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(7),
@@ -448,8 +601,15 @@ public class Controller {
                 ));
         animation.setCycleCount(1);
         animation.play();
-        for (int i = 1; i <= 20; ++i) { // +120
+        for (int i = 1; i <= 10; ++i) { // +120
             int idx = i + 120;
+            Label e = new Label(String.valueOf(idx));
+            e.setId(LABEL + idx);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i + 450);
+            e.setText(String.valueOf(idx));
+            parent.getChildren().add(e);
             TextField inputField = new TextField("");
             UnaryOperator<TextFormatter.Change> rejectChange = c -> {
                 if (c.isContentChange()) {
@@ -466,7 +626,44 @@ public class Controller {
             inputField.setId(TASK + idx);
             inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
             inputField.setLayoutX(LAYOUT_X);
-            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + 450 + 25);
+            parent.getChildren().add(inputField);
+        }
+        // add another image view
+        Image base2 = new Image("file:src/main/resources/subtest7/131-140.png");
+        image2.setImage(base2);
+        image2.setLayoutY(1500f);
+        image2.setFitHeight(500f);
+        image2.setFitWidth(1000f);
+        image2.setPreserveRatio(true);
+        image2.setSmooth(true);
+        image2.setVisible(true);
+        for (int i = 1; i <= 10; ++i) { // +130
+            int idx = i + 130;
+            Label e = new Label(String.valueOf(idx));
+            e.setId(LABEL + idx);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i + 1900);
+            e.setText(String.valueOf(idx));
+            parent.getChildren().add(e);
+            TextField inputField = new TextField("");
+            UnaryOperator<TextFormatter.Change> rejectChange = c -> {
+                if (c.isContentChange()) {
+                    for (char ch : c.getControlNewText().toCharArray()) {
+                        if (!Character.isDigit(ch)) {
+                            return null;
+                        }
+                    }
+                    return c;
+                }
+                return c;
+            };
+            inputField.setTextFormatter(new TextFormatter<>(rejectChange));
+            inputField.setId(TASK + idx);
+            inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
+            inputField.setLayoutX(LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + 1900 + 25);
             parent.getChildren().add(inputField);
         }
     }
@@ -475,7 +672,24 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 141-160");
         instructionText.setVisible(false);
-        nextStep.setVisible(false);
+        instructionText2.setVisible(false);
+        Image base = new Image("file:src/main/resources/subtest8/base.png");
+        image1.setImage(base);
+        image1.setFitHeight(500f);
+        image1.setFitWidth(1000f);
+        image1.setLayoutY(50f);
+        image1.setPreserveRatio(true);
+        image1.setSmooth(true);
+        image1.setVisible(true);
+        Image tests = new Image("file:src/main/resources/subtest8/141-160.png");
+        image2.setImage(tests);
+        image2.setFitHeight(500f);
+        image2.setFitWidth(1000f);
+        image2.setLayoutY(250f);
+        image2.setPreserveRatio(true);
+        image2.setSmooth(true);
+        image2.setVisible(true);
+//        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(9),
@@ -485,6 +699,13 @@ public class Controller {
         animation.play();
         for (int i = 1; i <= 20; ++i) { // +140
             int idx = i + 140;
+            Label e = new Label(String.valueOf(idx));
+            e.setId(LABEL + idx);
+            e.setPrefWidth(PREF_WIDTH);
+            e.setLayoutX(LAYOUT_X);
+            e.setLayoutY(LAYOUT_Y * i + 650);
+            e.setText(String.valueOf(idx));
+            parent.getChildren().add(e);
             TextField inputField = new TextField("");
             UnaryOperator<TextFormatter.Change> rejectChange = c -> {
                 if (c.isContentChange()) {
@@ -501,7 +722,7 @@ public class Controller {
             inputField.setId(TASK + idx);
             inputField.setPrefWidth(OUTPUT_PREF_WIDTH);
             inputField.setLayoutX(LAYOUT_X);
-            inputField.setLayoutY(LAYOUT_Y * i + LAYOUT_X);
+            inputField.setLayoutY(LAYOUT_Y * i + 650 + 25);
             parent.getChildren().add(inputField);
         }
 
