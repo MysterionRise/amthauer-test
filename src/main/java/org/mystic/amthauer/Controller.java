@@ -13,11 +13,9 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 
@@ -141,7 +139,7 @@ public class Controller {
             new SimpleEntry<>(20, "60.   1) научиться 2) приспособиться 3) остаться 4) присмотреться 5) адаптироваться 6) отдохнуть  ")
     );
 
-    private static final Map<Integer, String> CORRECT_ANSWERS = Map.ofEntries(
+    private static final Map<Integer, String> CORRECT_ANSWERS = Map.<Integer, String>ofEntries(
             new SimpleEntry<>(1, "5"),
             new SimpleEntry<>(2, "5"),
             new SimpleEntry<>(3, "2"),
@@ -377,7 +375,7 @@ public class Controller {
             );
             instructionText.setVisible(true);
             instructionText.setPrefHeight(100f);
-            Image example = new Image("file:src/main/resources/subtest7/example.png", true);
+            Image example = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest7/example.png")).toString());
             image1.setImage(example);
             image1.setVisible(true);
             image1.setLayoutY(200f);
@@ -407,7 +405,7 @@ public class Controller {
             instructionText.setPrefHeight(100f);
             instructionText.setLayoutY(50f);
             instructionText.setVisible(true);
-            Image example = new Image("file:src/main/resources/subtest8/example.png", true);
+            Image example = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest8/example.png")).toString());
             image1.setImage(example);
             image1.setVisible(true);
             image1.setLayoutY(150f);
@@ -459,7 +457,7 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 1-20");
         instructionText.setVisible(false);
-//        nextStep.setVisible(false);
+        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(6),
@@ -500,7 +498,7 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 21-40");
         instructionText.setVisible(false);
-//        nextStep.setVisible(false);
+        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(7),
@@ -542,7 +540,7 @@ public class Controller {
         testName.setVisible(true);
         testName.setText("ЗАДАНИЯ 41-60");
         instructionText.setVisible(false);
-//        nextStep.setVisible(false);
+        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(8),
@@ -585,7 +583,7 @@ public class Controller {
         testName.setText("ЗАДАНИЯ 121-140");
         instructionText.setVisible(false);
         instructionText2.setVisible(false);
-        Image base = new Image("file:src/main/resources/subtest7/121-130.png");
+        Image base = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest7/121-130.png")).toString());
         image1.setImage(base);
         image1.setLayoutY(50f);
         image1.setFitHeight(500f);
@@ -593,7 +591,7 @@ public class Controller {
         image1.setPreserveRatio(true);
         image1.setSmooth(true);
         image1.setVisible(true);
-//        nextStep.setVisible(false);
+        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(7),
@@ -630,7 +628,7 @@ public class Controller {
             parent.getChildren().add(inputField);
         }
         // add another image view
-        Image base2 = new Image("file:src/main/resources/subtest7/131-140.png");
+        Image base2 = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest7/131-140.png")).toString());
         image2.setImage(base2);
         image2.setLayoutY(1500f);
         image2.setFitHeight(500f);
@@ -673,7 +671,8 @@ public class Controller {
         testName.setText("ЗАДАНИЯ 141-160");
         instructionText.setVisible(false);
         instructionText2.setVisible(false);
-        Image base = new Image("file:src/main/resources/subtest8/base.png");
+
+        Image base = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest8/base.png")).toString());
         image1.setImage(base);
         image1.setFitHeight(500f);
         image1.setFitWidth(1000f);
@@ -681,7 +680,7 @@ public class Controller {
         image1.setPreserveRatio(true);
         image1.setSmooth(true);
         image1.setVisible(true);
-        Image tests = new Image("file:src/main/resources/subtest8/141-160.png");
+        Image tests = new Image(Objects.requireNonNull(Controller.class.getResource("/subtest8/141-160.png")).toString());
         image2.setImage(tests);
         image2.setFitHeight(500f);
         image2.setFitWidth(1000f);
@@ -689,7 +688,7 @@ public class Controller {
         image2.setPreserveRatio(true);
         image2.setSmooth(true);
         image2.setVisible(true);
-//        nextStep.setVisible(false);
+        nextStep.setVisible(false);
         Pane parent = (Pane) testName.getParent();
         Timeline animation = new Timeline(
                 new KeyFrame(Duration.minutes(9),
