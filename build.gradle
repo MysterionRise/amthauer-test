@@ -4,7 +4,7 @@ plugins {
     id 'org.beryx.jlink' version '2.24.1'
 }
 
-version = '0.1'
+version = '0.5'
 
 repositories {
     mavenCentral()
